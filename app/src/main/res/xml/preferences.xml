@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <SwitchPreference
+        android:defaultValue="true"
+        android:key="present_switch"
+        android:summary="Show present tense prompts"
+        android:title="Present" />
+    <SwitchPreference
+        android:defaultValue="true"
+        android:key="past_switch"
+        android:summary="Show simple past tense prompts"
+        android:title="Passé Composé" />
+    <SwitchPreference
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:defaultValue="true"
+        android:key="imparfait_switch"
+        android:summary="Show imperfect tense prompts"
+        android:title="L'imparfait" />
+    <SwitchPreference
+        android:defaultValue="true"
+        android:key="simple_future_switch"
+        android:summary="Show simple future tense prompts"
+        android:title="Simple Future" />
+</PreferenceScreen>
