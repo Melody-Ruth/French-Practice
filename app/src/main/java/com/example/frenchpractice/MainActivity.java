@@ -882,7 +882,7 @@ public class MainActivity extends AppCompatActivity {
         mourirC[1] = "meurs";
         mourirC[2] = "meurt";
         mourirC[3] = "mourons";
-        mourirC[4] = "vourez";
+        mourirC[4] = "mourez";
         mourirC[5] = "meurent";
         mourir.myConjugations = mourirC;
         mourir.family = "very irregular";
@@ -901,7 +901,7 @@ public class MainActivity extends AppCompatActivity {
         vivre.family = "very irregular";
         vivre.imparfaitStem = vivre.myConjugations[3].substring(0,vivre.myConjugations[3].length()-3);
 
-        survivre = new reVerb("survivre",toLive,avoir,"");
+        survivre = new reVerb("survivre",toSurvive,avoir,"");
         survivre.myPastParticiple = "vécu";
         String[] survivreC = new String[6];
         survivreC[0] = "survis";
@@ -1110,11 +1110,12 @@ public class MainActivity extends AppCompatActivity {
             prompt = prefPrivate.getString("prompt","");
             promptText.setText(prompt);
             OutputText.setText(prefPrivate.getString("output",""));
+            correct = prefPrivate.getString("answer","");
             answered = prefPrivate.getBoolean("answered",false);
             v = prefPrivate.getInt("v",0);
         }
 
-        if (savedInstanceState != null) {
+        /*if (savedInstanceState != null) {
             numCorrect = savedInstanceState.getInt("correct");
             numIncorrect = savedInstanceState.getInt("incorrect");
             numSkipped = savedInstanceState.getInt("skipped");
@@ -1127,7 +1128,7 @@ public class MainActivity extends AppCompatActivity {
             OutputText.setText(savedInstanceState.getString("output"));
             answered = savedInstanceState.getBoolean("answered");
             v = savedInstanceState.getInt("v",0);
-        }
+        }*/
     }
 
     //Called when enter button is pressed
@@ -1243,8 +1244,12 @@ public class MainActivity extends AppCompatActivity {
             case R.id.settings_id:
                 editor.putString("prompt",prompt);
                 editor.putString("output", OutputText.getText().toString());
+                editor.putString("answer", correct);
                 editor.putBoolean("answered",answered);
                 editor.putInt("v",v);
+                editor.putInt("correct", numCorrect);
+                editor.putInt("incorrect", numIncorrect);
+                editor.putInt("skipped", numSkipped);
                 editor.commit();
                 Intent intent = new Intent(this, SettingsActivity.class);
                 startActivity(intent);
@@ -1257,13 +1262,21 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-
-        outState.putInt("correct", numCorrect);
+        editor.putString("prompt",prompt);
+        editor.putString("output", OutputText.getText().toString());
+        editor.putString("answer", correct);
+        editor.putBoolean("answered",answered);
+        editor.putInt("correct", numCorrect);
+        editor.putInt("incorrect", numIncorrect);
+        editor.putInt("skipped", numSkipped);
+        editor.putInt("v",v);
+        editor.commit();
+        /*outState.putInt("correct", numCorrect);
         outState.putInt("incorrect", numIncorrect);
         outState.putInt("skipped", numSkipped);
         outState.putString("prompt",prompt);
         outState.putString("output", OutputText.getText().toString());
         outState.putBoolean("answered",answered);
-        outState.putInt("v",v);
+        outState.putInt("v",v);*/
     }
 }
