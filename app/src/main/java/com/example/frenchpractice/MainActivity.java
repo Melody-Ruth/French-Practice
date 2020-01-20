@@ -78,7 +78,6 @@ class englishVerb extends verb {
         futurePerfectForm = myConjugations[8];
         simpleFutureForm = myConjugations[0];
     }
-
     @Override
     String conjugate(int pronoun, int tense) {
         String phrase = "";
@@ -92,6 +91,10 @@ class englishVerb extends verb {
             phrase = pronouns[pronoun] + " will have " + futurePerfectForm;
         } else if (tense == 5) {//near future
             phrase = pronouns[pronoun] + " " + myImperfectHelper[pronoun] + " going to " + myName;
+        } else if (tense == 6) {//recent past
+            phrase = pronouns[pronoun] + " just " + myConjugations[pronoun+6];
+        } else if (tense == 7) {//conditional
+            phrase = pronouns[pronoun] + " would " + simpleFutureForm;
         }
         return phrase;
     }
@@ -123,6 +126,7 @@ class frenchVerb extends verb {
     String imparfaitStem;
     String simpleFutureStem;
     String[] allerPresentConjugations;
+    String[] venirPresentConjugations;
     frenchVerb (String name, verb translate, verb passeHelper, String explanation) {
         super(name, explanation);
         myStem = name.substring(0,name.length()-2);
@@ -138,6 +142,14 @@ class frenchVerb extends verb {
         allerPresentConjugations[3] = "allons";
         allerPresentConjugations[4] = "allez";
         allerPresentConjugations[5] = "vont";
+
+        venirPresentConjugations = new String[6];
+        venirPresentConjugations[0] = "viens";
+        venirPresentConjugations[1] = "viens";
+        venirPresentConjugations[2] = "vient";
+        venirPresentConjugations[3] = "venons";
+        venirPresentConjugations[4] = "venez";
+        venirPresentConjugations[5] = "viennent";
     }
     String conjugate(int pronoun,int tense) {
         String phrase = "";
@@ -200,10 +212,34 @@ class frenchVerb extends verb {
         } else if (tense == 4) {//future perfect
             phrase += myPasseHelper.conjugate(pronoun, 3);
             phrase += " "+myPastParticiple;
-        } else if (tense == 5) {
+        } else if (tense == 5) {//near future
             phrase += pronouns[pronoun];
             phrase += " "+allerPresentConjugations[pronoun];
             phrase += " "+myName;
+        } else if (tense == 6) {//recent past
+            phrase += pronouns[pronoun];
+            phrase += " "+venirPresentConjugations[pronoun];
+            phrase += " de "+myName;
+        } else if (tense == 7) {//conditional
+            char checkContraction = simpleFutureStem.charAt(0);
+            if (pronoun == 0 && (checkContraction == 'a' || checkContraction == 'e' || checkContraction == 'i' || checkContraction == 'o' || checkContraction == 'u' || checkContraction == 'h' || checkContraction == 'é' || checkContraction == 'è')) {
+                phrase += "J'";
+            } else {
+                phrase += pronouns[pronoun];
+                phrase += " ";
+            }
+            phrase += simpleFutureStem;
+            if (pronoun == 0 || pronoun == 1) {
+                phrase += "ais";
+            } else if (pronoun == 2) {
+                phrase += "ait";
+            } else if (pronoun == 3) {
+                phrase += "ions";
+            } else if (pronoun == 4) {
+                phrase += "iez";
+            } else if (pronoun == 5) {
+                phrase += "aient";
+            }
         }
         return phrase;
     }
@@ -581,6 +617,8 @@ public class MainActivity extends AppCompatActivity {
     boolean doSimpleFuture;
     boolean doFuturePerfect;
     boolean doNearFuture;
+    boolean doRecentPast;
+    boolean doConditional;
     int numTenses;
     int[] tenses;
 
@@ -628,6 +666,8 @@ public class MainActivity extends AppCompatActivity {
         doSimpleFuture = prefs.getBoolean("simple_future_switch", true);
         doFuturePerfect = prefs.getBoolean("future_perfect_switch",true);
         doNearFuture = prefs.getBoolean("near_future_switch",true);
+        doRecentPast = prefs.getBoolean("recent_past_switch",true);
+        doConditional = prefs.getBoolean("conditional_switch",true);
         /*if (!doPast && !doImperfect && !doSimpleFuture && !doFuturePerfect && !doNearFuture) {
             doPresent = true;
         }*/
@@ -648,6 +688,12 @@ public class MainActivity extends AppCompatActivity {
             numTenses++;
         }
         if (doNearFuture) {
+            numTenses++;
+        }
+        if (doRecentPast) {
+            numTenses++;
+        }
+        if (doConditional) {
             numTenses++;
         }
         if (numTenses == 0) {
@@ -678,6 +724,14 @@ public class MainActivity extends AppCompatActivity {
         }
         if (doNearFuture) {
             tenses[currentSlot] = 5;
+            currentSlot++;
+        }
+        if (doRecentPast) {
+            tenses[currentSlot] = 6;
+            currentSlot++;
+        }
+        if (doConditional) {
+            tenses[currentSlot] = 7;
             currentSlot++;
         }
 
@@ -1443,7 +1497,7 @@ public class MainActivity extends AppCompatActivity {
                 Intent intent = new Intent(this, SettingsActivity.class);
                 startActivity(intent);
                 return true;
-            case R.id.manage_verbs_id:
+            /*case R.id.manage_verbs_id:
                 editor.putString("prompt",prompt);
                 editor.putString("output", OutputText.getText().toString());
                 editor.putString("answer", correct);
@@ -1455,7 +1509,7 @@ public class MainActivity extends AppCompatActivity {
                 editor.commit();
                 //Intent manageVerbsIntent = new Intent(this, SettingsActivity.class);
                 //startActivity(manageVerbsIntent);
-                return true;
+                return true;*/
             default:
                 return super.onOptionsItemSelected(item);
         }

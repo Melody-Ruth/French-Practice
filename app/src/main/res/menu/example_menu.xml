@@ -7,10 +7,10 @@
         app:showAsAction="never">
 
     </item>
-    <item
+    <!--<item
         android:id="@+id/manage_verbs_id"
         android:title="@string/manageVerbs"
         app:showAsAction="never">
 
-    </item>
+    </item>-->
 </menu>
