@@ -19,6 +19,8 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+
 class verb {
     String[] myConjugations;
     String[] pronouns;
@@ -42,6 +44,8 @@ class verb {
 class englishVerb extends verb {
     String[] myImperfectHelper;
     String ingForm;
+    String futurePerfectForm;
+    String simpleFutureForm;
     englishVerb (String name, String[] conjugations, String explanation, String[] imperfectHelper) {
         super(name, explanation);
         pronouns = new String[] {"I","You","He","We","You (formal)","They"};
@@ -71,17 +75,23 @@ class englishVerb extends verb {
         } else {
             myConjugations = conjugations;
         }
+        futurePerfectForm = myConjugations[8];
+        simpleFutureForm = myConjugations[0];
     }
 
     @Override
     String conjugate(int pronoun, int tense) {
         String phrase = "";
-        if (tense == 0 || tense == 1) {
+        if (tense == 0 || tense == 1) {//present and past
             phrase = super.conjugate(pronoun, tense);
-        } else if (tense == 2) {
+        } else if (tense == 2) {//imperfect
             phrase = pronouns[pronoun] + " " + myImperfectHelper[pronoun+6] + " " + ingForm;
-        } else if (tense == 3) {
-            phrase = pronouns[pronoun] + " will " + myConjugations[0];
+        } else if (tense == 3) {//simple future
+            phrase = pronouns[pronoun] + " will " + simpleFutureForm;
+        } else if (tense == 4) {//future perfect
+            phrase = pronouns[pronoun] + " will have " + futurePerfectForm;
+        } else if (tense == 5) {//near future
+            phrase = pronouns[pronoun] + " " + myImperfectHelper[pronoun] + " going to " + myName;
         }
         return phrase;
     }
@@ -100,6 +110,7 @@ class specialPast extends englishVerb {
         for (int i = 6; i < 12; i++) {
             myConjugations[i] = past;
         }
+        futurePerfectForm = myConjugations[8];
     }
 }
 
@@ -111,6 +122,7 @@ class frenchVerb extends verb {
     String family;
     String imparfaitStem;
     String simpleFutureStem;
+    String[] allerPresentConjugations;
     frenchVerb (String name, verb translate, verb passeHelper, String explanation) {
         super(name, explanation);
         myStem = name.substring(0,name.length()-2);
@@ -118,10 +130,18 @@ class frenchVerb extends verb {
         myPasseHelper = passeHelper;
         pronouns = new String[] {"Je","Tu","Il","Nous","Vous","Ils"};
         simpleFutureStem = name;
+
+        allerPresentConjugations = new String[6];
+        allerPresentConjugations[0] = "vais";
+        allerPresentConjugations[1] = "vas";
+        allerPresentConjugations[2] = "va";
+        allerPresentConjugations[3] = "allons";
+        allerPresentConjugations[4] = "allez";
+        allerPresentConjugations[5] = "vont";
     }
     String conjugate(int pronoun,int tense) {
         String phrase = "";
-        if (tense == 0) {
+        if (tense == 0) {//present
             char checkContraction = myConjugations[pronoun].charAt(0);
             if (pronoun == 0 && (checkContraction == 'a' || checkContraction == 'e' || checkContraction == 'i' || checkContraction == 'o' || checkContraction == 'u' || checkContraction == 'h' || checkContraction == 'é' || checkContraction == 'è')) {
                 phrase += "J'";
@@ -131,11 +151,11 @@ class frenchVerb extends verb {
                 phrase += " ";
                 phrase += myConjugations[pronoun];
             }
-        } else if (tense == 1) {
+        } else if (tense == 1) {//passé composé
             phrase += myPasseHelper.conjugate(pronoun, 0);
             phrase += " ";
             phrase += myPastParticiple;
-        } else if (tense == 2) {
+        } else if (tense == 2) {//imparfait
             char checkContraction = imparfaitStem.charAt(0);
             if (pronoun == 0 && (checkContraction == 'a' || checkContraction == 'e' || checkContraction == 'i' || checkContraction == 'o' || checkContraction == 'u' || checkContraction == 'h' || checkContraction == 'é' || checkContraction == 'è')) {
                 phrase += "J'";
@@ -155,7 +175,7 @@ class frenchVerb extends verb {
             } else if (pronoun == 5) {
                 phrase += "aient";
             }
-        } else if (tense == 3) {
+        } else if (tense == 3) {//simple future
             char checkContraction = simpleFutureStem.charAt(0);
             if (pronoun == 0 && (checkContraction == 'a' || checkContraction == 'e' || checkContraction == 'i' || checkContraction == 'o' || checkContraction == 'u' || checkContraction == 'h' || checkContraction == 'é' || checkContraction == 'è')) {
                 phrase += "J'";
@@ -177,6 +197,13 @@ class frenchVerb extends verb {
             } else if (pronoun == 5) {
                 phrase += "ont";
             }
+        } else if (tense == 4) {//future perfect
+            phrase += myPasseHelper.conjugate(pronoun, 3);
+            phrase += " "+myPastParticiple;
+        } else if (tense == 5) {
+            phrase += pronouns[pronoun];
+            phrase += " "+allerPresentConjugations[pronoun];
+            phrase += " "+myName;
         }
         return phrase;
     }
@@ -362,7 +389,13 @@ public class MainActivity extends AppCompatActivity {
     Button enterButton;
     ImageButton questionButton;
 
-    frenchVerb[] frenchVerbs;
+    //frenchVerb[] frenchVerbs;
+    ArrayList<frenchVerb> frenchVerbs;
+    int totalVerbs;
+    ArrayList<frenchVerb> inUseVerbs;
+    int totalInUseVerbs;
+    ArrayList<frenchVerb> notInUseVerbs;
+    int totalNotInUseVerbs;
 
     frenchVerb être;
     frenchVerb avoir;
@@ -438,6 +471,12 @@ public class MainActivity extends AppCompatActivity {
     frenchVerb partir;
     frenchVerb vivre;
     frenchVerb survivre;
+    frenchVerb aller;
+    frenchVerb pouvoir;
+    frenchVerb vouloir;
+    frenchVerb devoir;
+    frenchVerb envoyer;
+    frenchVerb courir;
 
     englishVerb toBe;
     englishVerb toHave;
@@ -485,6 +524,7 @@ public class MainActivity extends AppCompatActivity {
     englishVerb toGoUp;
     englishVerb toLive;
     englishVerb toSurvive;
+    englishVerb toWant;
     esEnglishVerb toFinish;
     esEnglishVerb toPass;
     specialPast toSleep;
@@ -514,6 +554,11 @@ public class MainActivity extends AppCompatActivity {
     specialPast toDo;
     specialPast toChoose;
     specialPast toLeave;
+    specialPast toGo;
+    specialPast toBeAbleTo;
+    specialPast toHaveTo;
+    specialPast toSend;
+    specialPast toRun;
 
     int language;
     int p;
@@ -534,6 +579,8 @@ public class MainActivity extends AppCompatActivity {
     boolean doPast;
     boolean doImperfect;
     boolean doSimpleFuture;
+    boolean doFuturePerfect;
+    boolean doNearFuture;
     int numTenses;
     int[] tenses;
 
@@ -579,9 +626,11 @@ public class MainActivity extends AppCompatActivity {
         doPast = prefs.getBoolean("past_switch", true);
         doImperfect = prefs.getBoolean("imparfait_switch", true);
         doSimpleFuture = prefs.getBoolean("simple_future_switch", true);
-        if (!doPast && !doImperfect && !doSimpleFuture) {
+        doFuturePerfect = prefs.getBoolean("future_perfect_switch",true);
+        doNearFuture = prefs.getBoolean("near_future_switch",true);
+        /*if (!doPast && !doImperfect && !doSimpleFuture && !doFuturePerfect && !doNearFuture) {
             doPresent = true;
-        }
+        }*/
         numTenses = 0;
         if (doPresent) {
             numTenses++;
@@ -593,6 +642,12 @@ public class MainActivity extends AppCompatActivity {
             numTenses++;
         }
         if (doSimpleFuture) {
+            numTenses++;
+        }
+        if (doFuturePerfect) {
+            numTenses++;
+        }
+        if (doNearFuture) {
             numTenses++;
         }
         if (numTenses == 0) {
@@ -615,6 +670,15 @@ public class MainActivity extends AppCompatActivity {
         }
         if (doSimpleFuture) {
             tenses[currentSlot] = 3;
+            currentSlot++;
+        }
+        if (doFuturePerfect) {
+            tenses[currentSlot] = 4;
+            currentSlot++;
+        }
+        if (doNearFuture) {
+            tenses[currentSlot] = 5;
+            currentSlot++;
         }
 
         //helloEditText.setInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
@@ -634,6 +698,8 @@ public class MainActivity extends AppCompatActivity {
         toBeC[11] = "were";
         toBe = new englishVerb("be",toBeC,"",toBeC);
         toBe.ingForm = "being";
+        toBe.futurePerfectForm = "been";
+        toBe.simpleFutureForm = "be";
 
         String[] toHaveC = new String[12];
         toHaveC[0] = "have";
@@ -646,6 +712,8 @@ public class MainActivity extends AppCompatActivity {
             toHaveC[i] = "had";
         }
         toHave = new englishVerb("have",toHaveC,"",toBeC);
+        toHave.futurePerfectForm = "had";
+        //toHave.simpleFutureForm = "have";
 
         String[] toGoOutC = new String[12];
         toGoOutC[0] = "go out";
@@ -659,6 +727,7 @@ public class MainActivity extends AppCompatActivity {
         }
         toGoOut = new englishVerb("go out",toGoOutC,"",toBeC);
         toGoOut.ingForm = "going out";
+        toGoOut.futurePerfectForm = "went out";
 
         String[] toGoUpC = new String[12];
         toGoUpC[0] = "go up";
@@ -672,6 +741,7 @@ public class MainActivity extends AppCompatActivity {
         }
         toGoUp = new englishVerb("go up",toGoUpC,"",toBeC);
         toGoUp.ingForm = "going up";
+        toGoUp.futurePerfectForm = "went up";
 
         /*String[] toComeBackC = new String[12];
         toComeBackC[0] = "come back";
@@ -697,6 +767,7 @@ public class MainActivity extends AppCompatActivity {
         }
         toComeFrom = new englishVerb("come from",toComeFromC,"",toBeC);
         toComeFrom.ingForm = "coming from";
+        toComeFrom.futurePerfectForm = "come from";
 
         String[] toBeUnawareOfC = new String[12];
         toBeUnawareOfC[0] = "am unaware of";
@@ -713,6 +784,8 @@ public class MainActivity extends AppCompatActivity {
         toBeUnawareOfC[11] = "were unaware of";
         toBeUnawareOf = new englishVerb("unaware of",toBeUnawareOfC,"",toBeC);
         toBeUnawareOf.ingForm = "being unaware of";
+        toBeUnawareOf.futurePerfectForm = "been unaware of";
+        toBeUnawareOf.simpleFutureForm = "be unaware of";
 
         toTalk = new englishVerb("talk", new String[0],"",toBeC);
         toWalk = new englishVerb("walk", new String[0],"",toBeC);
@@ -754,27 +827,49 @@ public class MainActivity extends AppCompatActivity {
         toDie.ingForm = "dieing";
         toArrive = new englishVerb("arrive",new String[0],"",toBeC);
         toLive = new englishVerb("live",new String[0],"",toBeC);
+        toWant = new englishVerb("want",new String[0],"",toBeC);
+        toSurvive = new englishVerb("survive",new String[0],"",toBeC);
 
         toFinish = new esEnglishVerb("finish","",toBeC);
         toPass = new esEnglishVerb("pass","",toBeC);
 
         toChoose = new specialPast("choose","chose","",toBeC);
         toChoose.myConjugations[2]="chooses";
+        toChoose.futurePerfectForm = "chosen";
         toDo = new specialPast("do", "did","",toBeC);
         toDo.myConjugations[2]="does";
+        toDo.futurePerfectForm="chosen";
+        toBeAbleTo = new specialPast("can","could","",toBeC);
+        toBeAbleTo.myConjugations[2]="can";
+        toBeAbleTo.ingForm = "being able to";
+        toBeAbleTo.futurePerfectForm = "been able to";
+        toBeAbleTo.simpleFutureForm = "be able to";
+        toHaveTo = new specialPast("must","had to","",toBeC);
+        toHaveTo.myConjugations[2] = "must";
+        toHaveTo.ingForm = "having to";
+        toHaveTo.simpleFutureForm = "have to";
+        toRun = new specialPast("run","ran","",toBeC);
+        toRun.futurePerfectForm = "run";
 
         toSleep = new specialPast("sleep", "slept","",toBeC);
         toFall = new specialPast("fall", "fell","",toBeC);
+        toFall.futurePerfectForm = "fallen";
         toEat = new specialPast("eat", "ate","",toBeC);
+        toEat.futurePerfectForm = "eaten";
         toSee = new specialPast("see", "saw","",toBeC);
+        toSee.futurePerfectForm = "seen";
         toTake = new specialPast("take", "took","",toBeC);
+        toTake.futurePerfectForm = "taken";
         toKnow = new specialPast("know", "knew","(an object, a skill)",toBeC);
+        toKnow.futurePerfectForm = "known";
         toKnow2 = new specialPast("know", "knew","(a person)",toBeC);
+        toKnow2.futurePerfectForm = "known";
         toFight = new specialPast("fight", "fought","",toBeC);
         toAdmit = new specialPast("admit", "admitted","",toBeC);
         toLose = new specialPast("lose","lost","",toBeC);
         toSell = new specialPast("sell","sold","",toBeC);
         toDrive = new specialPast("drive","drove","",toBeC);
+        toDrive.futurePerfectForm = "driven";
         toRead = new specialPast("read","read","",toBeC);
         toRead.tenseHint = true;
         toSay = new specialPast("say","said","",toBeC);
@@ -782,14 +877,20 @@ public class MainActivity extends AppCompatActivity {
         toPut.tenseHint = true;
         toHear = new specialPast("hear","heard","",toBeC);
         toRewrite = new specialPast("rewrite","rewrote","",toBeC);
+        toRewrite.futurePerfectForm = "rewritten";
         toBuild = new specialPast("build","built","",toBeC);
         toWrite = new specialPast("write","wrote","",toBeC);
+        toWrite.futurePerfectForm = "written";
         toUnderstand = new specialPast("understand","understood","",toBeC);
         toCome = new specialPast("come","came","",toBeC);
+        toCome.futurePerfectForm = "come";
         toHold = new specialPast("hold","held","",toBeC);
         toBecome = new specialPast("become","became","",toBeC);
+        toBecome.futurePerfectForm = "become";
         toDrink = new specialPast("drink","drank","",toBeC);
         toLeave = new specialPast("leave","left","",toBeC);
+        toGo = new specialPast("go","went","",toBeC);
+        toSend = new specialPast("send","sent","",toBeC);
 
         avoir = new frenchVerb("avoir",toHave,toHave,"");//toHave is temporary. We're initializing avoir right now, so we can't use it yet
         avoir.myPasseHelper = avoir;//correcting the passeHelper from toHave.
@@ -834,6 +935,34 @@ public class MainActivity extends AppCompatActivity {
         voir.imparfaitStem = voir.myConjugations[3].substring(0,voir.myConjugations[3].length()-3);
         voir.simpleFutureStem = "verr";
 
+        pouvoir = new frenchVerb("pouvoir",toBeAbleTo,avoir,"");
+        pouvoir.myPastParticiple = "pu";
+        String[] pouvoirC = new String[6];
+        pouvoirC[0] = "peux";
+        pouvoirC[1] = "peux";
+        pouvoirC[2] = "peut";
+        pouvoirC[3] = "pouvons";
+        pouvoirC[4] = "pouvez";
+        pouvoirC[5] = "peuvent";
+        pouvoir.myConjugations = pouvoirC;
+        pouvoir.family = "very irregular";
+        pouvoir.imparfaitStem = pouvoir.myConjugations[3].substring(0,pouvoir.myConjugations[3].length()-3);
+        pouvoir.simpleFutureStem = "pourr";
+
+        vouloir = new frenchVerb("vouloir",toWant,avoir,"");
+        vouloir.myPastParticiple = "voulu";
+        String[] vouloirC = new String[6];
+        vouloirC[0] = "veux";
+        vouloirC[1] = "veux";
+        vouloirC[2] = "veut";
+        vouloirC[3] = "voulons";
+        vouloirC[4] = "voulez";
+        vouloirC[5] = "veulent";
+        vouloir.myConjugations = vouloirC;
+        vouloir.family = "very irregular";
+        vouloir.imparfaitStem = vouloir.myConjugations[3].substring(0,vouloir.myConjugations[3].length()-3);
+        vouloir.simpleFutureStem = "voudr";
+
         savoir = new frenchVerb("savoir",toKnow,avoir,"");
         savoir.myPastParticiple = "su";
         String[] savoirC = new String[6];
@@ -847,6 +976,20 @@ public class MainActivity extends AppCompatActivity {
         savoir.family = "very irregular";
         savoir.imparfaitStem = savoir.myConjugations[3].substring(0,savoir.myConjugations[3].length()-3);
         savoir.simpleFutureStem = "saur";
+
+        devoir = new frenchVerb("devoir",toHaveTo,avoir,"");
+        devoir.myPastParticiple = "dû";
+        String[] devoirC = new String[6];
+        devoirC[0] = "dois";
+        devoirC[1] = "dois";
+        devoirC[2] = "doit";
+        devoirC[3] = "devons";
+        devoirC[4] = "devez";
+        devoirC[5] = "doivent";
+        devoir.myConjugations = devoirC;
+        devoir.family = "very irregular";
+        devoir.imparfaitStem = devoir.myConjugations[3].substring(0,devoir.myConjugations[3].length()-3);
+        devoir.simpleFutureStem = "devr";
 
         faire = new frenchVerb("faire",toDo,avoir,"");
         faire.myPastParticiple = "fait";
@@ -902,7 +1045,7 @@ public class MainActivity extends AppCompatActivity {
         vivre.imparfaitStem = vivre.myConjugations[3].substring(0,vivre.myConjugations[3].length()-3);
 
         survivre = new reVerb("survivre",toSurvive,avoir,"");
-        survivre.myPastParticiple = "vécu";
+        survivre.myPastParticiple = "survécu";
         String[] survivreC = new String[6];
         survivreC[0] = "survis";
         survivreC[1] = "survis";
@@ -913,6 +1056,33 @@ public class MainActivity extends AppCompatActivity {
         survivre.myConjugations = survivreC;
         survivre.family = "very irregular";
         survivre.imparfaitStem = survivre.myConjugations[3].substring(0,survivre.myConjugations[3].length()-3);
+
+        aller = new erVerb("aller",toGo,être,"");
+        String[] allerC = new String[6];
+        allerC[0] = "vais";
+        allerC[1] = "vas";
+        allerC[2] = "va";
+        allerC[3] = "allons";
+        allerC[4] = "allez";
+        allerC[5] = "vont";
+        aller.myConjugations = allerC;
+        aller.family = "very irregular";
+        aller.imparfaitStem = aller.myConjugations[3].substring(0,aller.myConjugations[3].length()-3);
+        aller.simpleFutureStem = "ir";
+
+        courir = new irVerb("courir",toRun,avoir,"");
+        String[] courirC = new String[6];
+        courirC[0] = "cours";
+        courirC[1] = "cours";
+        courirC[2] = "court";
+        courirC[3] = "courons";
+        courirC[4] = "courez";
+        courirC[5] = "courent";
+        courir.myConjugations = courirC;
+        courir.family = "very irregular";
+        courir.imparfaitStem = courir.myConjugations[3].substring(0,courir.myConjugations[3].length()-3);
+        courir.myPastParticiple = "couru";
+        courir.simpleFutureStem = "courr";
 
         parler = new erVerb("parler",toTalk,avoir,"");
         marcher = new erVerb("marcher",toWalk,avoir,"");
@@ -926,6 +1096,8 @@ public class MainActivity extends AppCompatActivity {
         retourner = new erVerb("retourner",toReturn2,être,"");
         rentrer = new erVerb("rentrer",toReturn4,être,"");
         monter = new erVerb("monter",toGoUp,être,"");
+        envoyer = new erVerb("envoyer",toSend,avoir,"");
+        envoyer.simpleFutureStem = "enverr";
 
         répondre = new reVerb("répondre",toAnswer,avoir,"");
         prétendre = new reVerb("prétendre",toClaim,avoir,"");
@@ -990,84 +1162,101 @@ public class MainActivity extends AppCompatActivity {
         sortir = new partirFamily("sortir",toGoOut,être,"");
         partir = new partirFamily("partir",toLeave,être,"");
 
-        frenchVerbs = new frenchVerb[73];
-        frenchVerbs[0] = être;
-        frenchVerbs[1] = avoir;
-        frenchVerbs[2] = parler;
-        frenchVerbs[3] = marcher;
-        frenchVerbs[4] = tomber;
-        frenchVerbs[5] = manger;
-        frenchVerbs[6] = voir;
-        frenchVerbs[7] = répondre;
-        frenchVerbs[8] = prétendre;
-        frenchVerbs[9] = prendre;
-        frenchVerbs[10] = savoir;
-        frenchVerbs[11] = faire;
-        frenchVerbs[12] = combattre;
-        frenchVerbs[13] = admettre;
-        frenchVerbs[14] = descendre;
-        frenchVerbs[15] = débattre;
-        frenchVerbs[16] = attendre;
-        frenchVerbs[17] = finir;
-        frenchVerbs[18] = dormir;
-        frenchVerbs[19] = mentir;
-        frenchVerbs[20] = contradire;
-        frenchVerbs[21] = perdre;
-        frenchVerbs[22] = vendre;
-        frenchVerbs[23] = servir;
-        frenchVerbs[24] = conduire;
-        frenchVerbs[25] = prédire;
-        frenchVerbs[26] = lire;
-        frenchVerbs[27] = défendre;
-        frenchVerbs[28] = dire;
-        frenchVerbs[29] = mettre;
-        frenchVerbs[30] = promettre;
-        frenchVerbs[31] = surprendre;
-        frenchVerbs[32] = traduire;
-        frenchVerbs[33] = sortir;
-        frenchVerbs[34] = fondre;
-        frenchVerbs[35] = entendre;
-        frenchVerbs[36] = récrire;
-        frenchVerbs[37] = décrire;
-        frenchVerbs[38] = construire;
-        frenchVerbs[39] = écrire;
-        frenchVerbs[40] = comprendre;
-        frenchVerbs[41] = cuire;
-        frenchVerbs[42] = rendre;
-        frenchVerbs[43] = utiliser;
-        frenchVerbs[44] = apprendre;
-        frenchVerbs[45] = venir;
-        frenchVerbs[46] = tenir;
-        frenchVerbs[47] = revenir;
-        frenchVerbs[48] = provenir;
-        frenchVerbs[49] = obtenir;
-        frenchVerbs[50] = maintenir;
-        frenchVerbs[51] = devenir;
-        frenchVerbs[52] = contenir;
-        frenchVerbs[53] = appartenir;
-        frenchVerbs[54] = boire;
-        frenchVerbs[55] = connaître;
-        frenchVerbs[56] = apparaître;
-        frenchVerbs[57] = disparaître;
-        frenchVerbs[58] = reparaître;
-        frenchVerbs[59] = reconnaître;
-        frenchVerbs[60] = paraître;
-        frenchVerbs[61] = méconnaître;
-        frenchVerbs[62] = rester;
-        frenchVerbs[63] = passer;
-        frenchVerbs[64] = entrer;
-        frenchVerbs[65] = mourir;
-        frenchVerbs[66] = arriver;
-        frenchVerbs[67] = retourner;
-        frenchVerbs[68] = rentrer;
-        frenchVerbs[69] = monter;
-        frenchVerbs[70] = partir;
-        frenchVerbs[71] = vivre;
-        frenchVerbs[72] = survivre;
+        //frenchVerbs = new frenchVerb[73];
+        frenchVerbs = new ArrayList<frenchVerb>();
+        frenchVerbs.add(être);
+        frenchVerbs.add(avoir);
+        frenchVerbs.add(parler);
+        frenchVerbs.add(marcher);
+        frenchVerbs.add(tomber);
+        frenchVerbs.add(manger);
+        frenchVerbs.add(voir);
+        frenchVerbs.add(répondre);
+        frenchVerbs.add(prétendre);
+        frenchVerbs.add(prendre);
+        frenchVerbs.add(savoir);
+        frenchVerbs.add(faire);
+        frenchVerbs.add(combattre);
+        frenchVerbs.add(admettre);
+        frenchVerbs.add(descendre);
+        frenchVerbs.add(débattre);
+        frenchVerbs.add(attendre);
+        frenchVerbs.add(finir);
+        frenchVerbs.add(dormir);
+        frenchVerbs.add(mentir);
+        frenchVerbs.add(contradire);
+        frenchVerbs.add(perdre);
+        frenchVerbs.add(vendre);
+        frenchVerbs.add(servir);
+        frenchVerbs.add(conduire);
+        frenchVerbs.add(prédire);
+        frenchVerbs.add(lire);
+        frenchVerbs.add(défendre);
+        frenchVerbs.add(dire);
+        frenchVerbs.add(mettre);
+        frenchVerbs.add(promettre);
+        frenchVerbs.add(surprendre);
+        frenchVerbs.add(traduire);
+        frenchVerbs.add(sortir);
+        frenchVerbs.add(fondre);
+        frenchVerbs.add(entendre);
+        frenchVerbs.add(récrire);
+        frenchVerbs.add(décrire);
+        frenchVerbs.add(construire);
+        frenchVerbs.add(écrire);
+        frenchVerbs.add(comprendre);
+        frenchVerbs.add(cuire);
+        frenchVerbs.add(rendre);
+        frenchVerbs.add(utiliser);
+        frenchVerbs.add(apprendre);
+        frenchVerbs.add(venir);
+        frenchVerbs.add(tenir);
+        frenchVerbs.add(revenir);
+        frenchVerbs.add(provenir);
+        frenchVerbs.add(obtenir);
+        frenchVerbs.add(maintenir);
+        frenchVerbs.add(devenir);
+        frenchVerbs.add(contenir);
+        frenchVerbs.add(appartenir);
+        frenchVerbs.add(boire);
+        frenchVerbs.add(connaître);
+        frenchVerbs.add(apparaître);
+        frenchVerbs.add(disparaître);
+        frenchVerbs.add(reparaître);
+        frenchVerbs.add(reconnaître);
+        frenchVerbs.add(paraître);
+        frenchVerbs.add(méconnaître);
+        frenchVerbs.add(rester);
+        frenchVerbs.add(passer);
+        frenchVerbs.add(entrer);
+        frenchVerbs.add(mourir);
+        frenchVerbs.add(arriver);
+        frenchVerbs.add(retourner);
+        frenchVerbs.add(rentrer);
+        frenchVerbs.add(monter);
+        frenchVerbs.add(partir);
+        frenchVerbs.add(vivre);
+        frenchVerbs.add(survivre);
+        frenchVerbs.add(pouvoir);
+        frenchVerbs.add(devoir);
+        frenchVerbs.add(aller);
+        frenchVerbs.add(vouloir);
+        frenchVerbs.add(envoyer);
+        frenchVerbs.add(courir);
+
+        totalVerbs = frenchVerbs.size();
+        totalInUseVerbs = frenchVerbs.size();
+        totalNotInUseVerbs = 0;
+
+        inUseVerbs = new ArrayList<frenchVerb>();
+        notInUseVerbs = new ArrayList<frenchVerb>();
+        for (int i = 0; i < totalVerbs; i++) {
+            inUseVerbs.add(frenchVerbs.get(i));
+        }
 
         promptText.setText(" ");
 
-        v = (int) (frenchVerbs.length*Math.random());
+        v = (int) (frenchVerbs.size()*Math.random());
         language = (int) (2*Math.random());
         p = (int) (6*Math.random());
         t = (int) (numTenses*Math.random());
@@ -1076,17 +1265,17 @@ public class MainActivity extends AppCompatActivity {
         prompt = "";
 
         if (language == 0) {//translate French to English
-            //System.out.println(frenchVerbs[v].conjugate(p, t));
-            prompt += frenchVerbs[v].conjugate(p, t);
-            hint += frenchVerbs[v].myExplanation;
-            correct = frenchVerbs[v].myTranslate.conjugate(p, t);
+            //System.out.println(frenchVerbs.get(v).conjugate(p, t));
+            prompt += frenchVerbs.get(v).conjugate(p, t);
+            hint += frenchVerbs.get(v).myExplanation;
+            correct = frenchVerbs.get(v).myTranslate.conjugate(p, t);
         } else {//translate English to French
-            prompt += frenchVerbs[v].myTranslate.conjugate(p, t);
-            hint += frenchVerbs[v].myTranslate.myExplanation;
-            correct = frenchVerbs[v].conjugate(p, t);
+            prompt += frenchVerbs.get(v).myTranslate.conjugate(p, t);
+            hint += frenchVerbs.get(v).myTranslate.myExplanation;
+            correct = frenchVerbs.get(v).conjugate(p, t);
         }
         //Some English verbs are conjugation the same way in the past as the present. To clear up any ambiguity, we say what tense we're looking for.
-        if (language == 1 && frenchVerbs[v].myTranslate.tenseHint) {
+        if (language == 1 && frenchVerbs.get(v).myTranslate.tenseHint) {
             if (t == 0) {
                 hint += "(present)";
             } else if (t == 1) {
@@ -1147,7 +1336,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void nextPrompt(View view) {
-        v = (int) (frenchVerbs.length*Math.random());
+        v = (int) (frenchVerbs.size()*Math.random());
         language = (int) (2*Math.random());
         p = (int) (6*Math.random());
         t = (int) (numTenses*Math.random());
@@ -1156,17 +1345,17 @@ public class MainActivity extends AppCompatActivity {
         prompt = "";
 
         if (language == 0) {//translate French to English
-            //System.out.println(frenchVerbs[v].conjugate(p, t));
-            prompt += frenchVerbs[v].conjugate(p, t);
-            hint += frenchVerbs[v].myExplanation;
-            correct = frenchVerbs[v].myTranslate.conjugate(p, t);
+            //System.out.println(frenchVerbs.get(v).conjugate(p, t));
+            prompt += frenchVerbs.get(v).conjugate(p, t);
+            hint += frenchVerbs.get(v).myExplanation;
+            correct = frenchVerbs.get(v).myTranslate.conjugate(p, t);
         } else {//translate English to French
-            prompt += frenchVerbs[v].myTranslate.conjugate(p, t);
-            hint += frenchVerbs[v].myTranslate.myExplanation;
-            correct = frenchVerbs[v].conjugate(p, t);
+            prompt += frenchVerbs.get(v).myTranslate.conjugate(p, t);
+            hint += frenchVerbs.get(v).myTranslate.myExplanation;
+            correct = frenchVerbs.get(v).conjugate(p, t);
         }
         //Some English verbs are conjugation the same way in the past as the present. To clear up any ambiguity, we say what tense we're looking for.
-        if (language == 1 && frenchVerbs[v].myTranslate.tenseHint) {
+        if (language == 1 && frenchVerbs.get(v).myTranslate.tenseHint) {
             if (t == 0) {
                 hint += "(present)";
             } else if (t == 1) {
@@ -1194,7 +1383,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void help (View view) {
-        frenchVerb current = frenchVerbs[v];
+        frenchVerb current = frenchVerbs.get(v);
         helpText = current.myName+" is a "+current.family+" verb.\nIts translation is to "+current.myTranslate.myName+".\n";
         if (current.myTranslate.myExplanation != null) {
             helpText += current.myTranslate.myExplanation+"\n";
@@ -1208,7 +1397,7 @@ public class MainActivity extends AppCompatActivity {
                 helpText += "   ";
             }
         }
-        helpText += "\n\nIts past participle is "+current.myPastParticiple+", and it uses "+current.myPasseHelper.myName+".";
+        helpText += "\n\nIts past participle is "+current.myPastParticiple+", and it uses "+current.myPasseHelper.myName+" for passé composé and future perfect.";
         helpText += "\nIts nous conjugation is "+current.myConjugations[3]+", so its imparfait stem is "+current.imparfaitStem+".";
         if (current.myName == "être") {
             helpText += " (être is weird)";
@@ -1253,6 +1442,19 @@ public class MainActivity extends AppCompatActivity {
                 editor.commit();
                 Intent intent = new Intent(this, SettingsActivity.class);
                 startActivity(intent);
+                return true;
+            case R.id.manage_verbs_id:
+                editor.putString("prompt",prompt);
+                editor.putString("output", OutputText.getText().toString());
+                editor.putString("answer", correct);
+                editor.putBoolean("answered",answered);
+                editor.putInt("v",v);
+                editor.putInt("correct", numCorrect);
+                editor.putInt("incorrect", numIncorrect);
+                editor.putInt("skipped", numSkipped);
+                editor.commit();
+                //Intent manageVerbsIntent = new Intent(this, SettingsActivity.class);
+                //startActivity(manageVerbsIntent);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

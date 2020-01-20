@@ -23,4 +23,14 @@
         android:key="simple_future_switch"
         android:summary="Show simple future tense prompts"
         android:title="Simple Future" />
+    <SwitchPreference
+        android:defaultValue="true"
+        android:key="future_perfect_switch"
+        android:summary="Show future perfect tense prompts"
+        android:title="Future Perfect" />
+    <SwitchPreference
+        android:defaultValue="true"
+        android:key="near_future_switch"
+        android:summary="Show near future tense prompts"
+        android:title="Near Future" />
 </PreferenceScreen>
