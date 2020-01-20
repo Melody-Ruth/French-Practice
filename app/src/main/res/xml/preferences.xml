@@ -33,4 +33,14 @@
         android:key="near_future_switch"
         android:summary="Show near future tense prompts"
         android:title="Near Future" />
+    <SwitchPreference
+        android:defaultValue="true"
+        android:key="recent_past_switch"
+        android:summary="Show recent past tense prompts"
+        android:title="Recent Past" />
+    <SwitchPreference
+        android:defaultValue="true"
+        android:key="conditional_switch"
+        android:summary="Show conditional tense prompts"
+        android:title="Conditional" />
 </PreferenceScreen>
