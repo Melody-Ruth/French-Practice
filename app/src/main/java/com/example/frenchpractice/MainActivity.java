@@ -167,6 +167,14 @@ class frenchVerb extends verb {
             phrase += myPasseHelper.conjugate(pronoun, 0);
             phrase += " ";
             phrase += myPastParticiple;
+            if (myPasseHelper.myName.equals("être")) {
+                if (pronoun == 0 || pronoun == 3) {
+                    phrase += "e";
+                }
+                if (pronoun == 3 || pronoun == 5) {
+                    phrase += "s";
+                }
+            }
         } else if (tense == 2) {//imparfait
             char checkContraction = imparfaitStem.charAt(0);
             if (pronoun == 0 && (checkContraction == 'a' || checkContraction == 'e' || checkContraction == 'i' || checkContraction == 'o' || checkContraction == 'u' || checkContraction == 'h' || checkContraction == 'é' || checkContraction == 'è')) {
