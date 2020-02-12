@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-
+    <SwitchPreference
+        android:defaultValue="true"
+        android:key="course_switch"
+        android:summary="Show all verbs in the app (not just ones used in French 102 so far)"
+        android:title="All Verbs" />
     <SwitchPreference
         android:defaultValue="true"
         android:key="present_switch"
@@ -43,4 +47,5 @@
         android:key="conditional_switch"
         android:summary="Show conditional tense prompts"
         android:title="Conditional" />
+
 </PreferenceScreen>
