@@ -954,7 +954,7 @@ public class MainActivity extends AppCompatActivity {
         toMoveOutC[10] = "moved out";
         toMoveOutC[11] = "moved out";
         toMoveOut = new englishVerb("move out",toMoveOutC,"",toBeC);
-        toMoveOut.ingForm = "movoutg out";
+        toMoveOut.ingForm = "moving out";
         toMoveOut.futurePerfectForm = "moved out";
         toMoveOut.simpleFutureForm = "move out";
 
@@ -1037,6 +1037,7 @@ public class MainActivity extends AppCompatActivity {
         toHaveTo.simpleFutureForm = "have to";
         toRun = new specialPast("run","ran","",toBeC);
         toRun.futurePerfectForm = "run";
+        toRun.ingForm = "running";
 
         toSleep = new specialPast("sleep", "slept","",toBeC);
         toFall = new specialPast("fall", "fell","",toBeC);
@@ -1062,6 +1063,7 @@ public class MainActivity extends AppCompatActivity {
         toSay = new specialPast("say","said","",toBeC);
         toPut = new specialPast("put","put","",toBeC);
         toPut.tenseHint = true;
+        toPut.ingForm = "putting";
         toHear = new specialPast("hear","heard","",toBeC);
         toRewrite = new specialPast("rewrite","rewrote","",toBeC);
         toRewrite.futurePerfectForm = "rewritten";
