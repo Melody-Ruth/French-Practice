@@ -125,10 +125,12 @@ class frenchVerb extends verb {
     String family;
     String imparfaitStem;
     String simpleFutureStem;
+    boolean gerVerb;
     String[] allerPresentConjugations;
     String[] venirPresentConjugations;
     frenchVerb (String name, verb translate, verb passeHelper, String explanation) {
         super(name, explanation);
+        gerVerb = false;
         myStem = name.substring(0,name.length()-2);
         myTranslate = translate;
         myPasseHelper = passeHelper;
@@ -185,15 +187,27 @@ class frenchVerb extends verb {
             }
             phrase += imparfaitStem;
             if (pronoun == 0 || pronoun == 1) {
-                phrase += "ais";
+                if (gerVerb) {
+                    phrase += "eais";
+                } else {
+                    phrase += "ais";
+                }
             } else if (pronoun == 2) {
-                phrase += "ait";
+                if (gerVerb) {
+                    phrase += "eait";
+                } else {
+                    phrase += "ait";
+                }
             } else if (pronoun == 3) {
                 phrase += "ions";
             } else if (pronoun == 4) {
                 phrase += "iez";
             } else if (pronoun == 5) {
-                phrase += "aient";
+                if (gerVerb) {
+                    phrase += "eaient";
+                } else {
+                    phrase += "aient";
+                }
             }
         } else if (tense == 3) {//simple future
             char checkContraction = simpleFutureStem.charAt(0);
@@ -259,6 +273,7 @@ class erVerb extends frenchVerb {
         super(name,translate,passeHelper, explanation);
         family = "regular _er";
         myConjugations = new String[6];
+        gerVerb = false;
         if (myStem.charAt(myStem.length()-1)=='y') {
             family = "stem-changing _er";
             myStem = myStem.substring(0, myStem.length()-1);
@@ -279,6 +294,7 @@ class erVerb extends frenchVerb {
             myConjugations[5]=myStem+"cent";
         } else if (myStem.charAt(myStem.length()-1)=='g') {
             family = "spelling-changing _er";
+            gerVerb = true;
             myConjugations[0]=myStem+"e";
             myConjugations[1]=myStem+"es";
             myConjugations[2]=myStem+"e";
@@ -294,7 +310,11 @@ class erVerb extends frenchVerb {
             myConjugations[5]=myStem+"ent";
         }
         myPastParticiple = myStem+"é";
-        imparfaitStem = myConjugations[3].substring(0,myConjugations[3].length()-3);
+        if (gerVerb) {
+            imparfaitStem = myConjugations[3].substring(0,myConjugations[3].length()-4);
+        } else {
+            imparfaitStem = myConjugations[3].substring(0,myConjugations[3].length()-3);
+        }
     }
 }
 
@@ -996,7 +1016,7 @@ public class MainActivity extends AppCompatActivity {
         toStay = new englishVerb("stay",new String[0],"",toBeC);
         toEnter = new englishVerb("enter",new String[0],"",toBeC);
         toDie = new englishVerb("die",new String[0],"",toBeC);
-        toDie.ingForm = "dieing";
+        toDie.ingForm = "dying";
         toArrive = new englishVerb("arrive",new String[0],"",toBeC);
         toLive = new englishVerb("live",new String[0],"(to be alive)",toBeC);
         toLive2 = new englishVerb("live",new String[0],"(in a place)",toBeC);
@@ -1366,7 +1386,7 @@ public class MainActivity extends AppCompatActivity {
         jouer = new erVerb("jouer",toPlay,avoir,"");
         louer = new erVerb("louer",toRent,avoir,"");
         emménager = new erVerb("emménager",toMoveIn,avoir,"");
-        déménager = new erVerb("deménager",toMoveOut,avoir,"");
+        déménager = new erVerb("déménager",toMoveOut,avoir,"");
 
         répondre = new reVerb("répondre",toAnswer,avoir,"");
         prétendre = new reVerb("prétendre",toClaim,avoir,"");
