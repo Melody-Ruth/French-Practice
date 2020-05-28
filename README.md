@@ -1,3 +1,3 @@
 # French-Practice
 
-This project is an android app I am making to use for studying french verbs.
+This project is an app I created to help myself practice conjugating french verbs. The user can select which tenses they want to practice, and the app will generate a simple sentence combining a random pronoun, random verb, random language (french or english), and a random tense. The user will then enter the translation of the sentence. The app keeps track of the number of correct and incorrect answers, as well as the number of skipped questions. In addition, the user has the option to view a summary of the current verb, its translation, and its conjugation in case they get stuck.
